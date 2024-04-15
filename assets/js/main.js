@@ -268,8 +268,7 @@ loadHTML();
 
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
-var urlImages =
-  "https://sylvia.104cubes.com/MySQL/noticiasForm/img/.1711449668-person-reading-newspaper.jpg.";
+var urlImages = "../../images/pic02.jpg";
 
 fetch(urlBase + endpoint)
   .then(objectLoop)
@@ -293,8 +292,8 @@ function printData(item) {
 			<span class="date">${item.fecha}</span>
 				<h2><a href="#">${item.titulo}</a></h2>
 			</header>
-			<a href="#" class="image fit"><img src="${urlImages}" alt="" /></a>
-				<p class="card-text">Autor:${item.autor}</p>
+			<a href="#" class="image fit" ><img src="${urlImages}" alt="" /></a>
+      <span>Autor:${item.autor}</span>
 				<p class="card-text">Categoria${item.categoria}</p>
 				<p>${content.length >= 50 ? content.substring(0, 50) + "..." : content}</p>
 				<ul class="actions special">
@@ -304,6 +303,9 @@ function printData(item) {
   ];
 }
 
+
+//Fecha Actual en Portada
+
 let currentDate = new Date();
 const options = {
   weekday: "long",
@@ -312,7 +314,15 @@ const options = {
   day: "numeric",
 };
 
-document.getElementById("fecha-actual").innerHTML = currentDate.toLocaleDateString(undefined, options);
+let formattedDate = currentDate.toLocaleDateString('es-ES', options);
+
+// Capitalizar la primera letra de cada palabra en el nombre del mes
+formattedDate = formattedDate.replace(/\b(\w)/g, char => char.toUpperCase());
+
+// Capitalizar la primera letra del nombre del día
+formattedDate = formattedDate.replace(/^(.)/, char => char.toUpperCase());
+
+document.getElementById("fecha-actual").innerHTML = formattedDate;
 
 
   //ESTO FUNCIONA 
