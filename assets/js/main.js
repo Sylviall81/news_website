@@ -237,6 +237,14 @@ function loadHTML() {
       console.error("Error al cargar el header:", error);
     });
 
+    fetch("../assets/html/nav.html")
+    .then(function (response) {
+      print(response, "nav");
+    })
+    .catch(function (error) {
+      console.error("Error al cargar el nav:", error);
+    });
+
   fetch("../assets/html/intro.html")
     .then(function (response) {
       print(response, "intro");
@@ -325,25 +333,3 @@ formattedDate = formattedDate.replace(/^(.)/, char => char.toUpperCase());
 document.getElementById("fecha-actual").innerHTML = formattedDate;
 
 
-  //ESTO FUNCIONA 
-/*const loadHTML = () => {
-	fetch('../assets/html/header.html')
-	  .then(response => response.text())
-	  .then(data => {
-		document.getElementById('header').innerHTML = data;
-	  });
-
-	  fetch('../assets/html/footer.html')
-	  .then(response => response.text())
-	  .then(data => {
-		document.getElementById('footer').innerHTML = data;
-	  });
-
-	  fetch('../assets/html/copyright.html')
-	  .then(response => response.text())
-	  .then(data => {
-		document.getElementById('copyright').innerHTML = data;
-	  });
-  };
-  
-  window.addEventListener('DOMContentLoaded', loadHTML);*/
