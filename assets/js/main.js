@@ -312,8 +312,7 @@ const options = {
   day: "numeric",
 };
 
-document.getElementById("fecha-actual").innerHTML =
-  currentDate.toLocaleDateString(undefined, options);
+document.getElementById("fecha-actual").innerHTML = currentDate.toLocaleDateString(undefined, options);
 
 
   //ESTO FUNCIONA 
