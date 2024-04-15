@@ -298,12 +298,13 @@ function printData(item) {
     `<article>
 		<header>
 			<span class="date">${item.fecha}</span>
-				<h2><a href="#">${item.titulo}</a></h2>
+				<h3><a href="#">${item.titulo}</a></h3>
+        
+        <span><strong>Escrito por:</strong> ${item.autor} | <strong>Categoría: </strong>${item.categoria} </span>
 			</header>
 			<a href="#" class="image fit" ><img src="${urlImages}" alt="" /></a>
-      <span>Autor:${item.autor}</span>
-				<p class="card-text">Categoria${item.categoria}</p>
-				<p>${content.length >= 50 ? content.substring(0, 50) + "..." : content}</p>
+      
+			<p>${content.length >= 50 ? content.substring(0, 50) + "..." : content}</p>
 				<ul class="actions special">
 				<li><a href="#" class="button">Full Story</a></li>
 				</ul>
