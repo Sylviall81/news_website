@@ -220,6 +220,9 @@
   }
 })(jQuery);
 
+
+//LOGICA TRABAJADA EN CLASE
+
 async function print(datos, id) {
   let html = await datos.text();
   //  $('#' + donde).html(html);
@@ -227,7 +230,6 @@ async function print(datos, id) {
 }
 
 //fetch de componentes descargados de carpeta html
-
 function loadHTML() {
   fetch("../assets/html/header.html")
     .then(function (response) {
@@ -286,8 +288,9 @@ loadHTML();
 
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
-
 var urlImages = "../../images/pic02.jpg";
+
+//Fetch Get All
 
 fetch(urlBase + endpoint)
   .then(objectLoop)
@@ -299,10 +302,11 @@ async function objectLoop(response) {
 
   document.getElementById("print-container").innerHTML = datos
     .map(printData)
-    .join(""); //map te mete comas entre items y join te permite removerla
+    .join(""); //map te mete comas entre items y join te permite removerlas
 
 }
 
+//aqui se imprimen la tarjetas del home
 function printData(item) {
   let content = item.texto;
 
@@ -325,6 +329,7 @@ function printData(item) {
 }
 
 
+//Funciones para ver el detalle de noticia
 
 function getParameterByName(name, url) {
   if (!url)
@@ -346,22 +351,14 @@ if (getParameterByName('postId')){
   let text = getParameterByName('postId');
   let getItem = "api/post.php?id="+text;
 
-  //alert("estamos en generic para mostrar el post id:"+text)
+  alert("estamos en generic para mostrar el post id:"+text)
 
+  /*fetch para "traer" la noticia x el id
   fetch(urlBase + getItem)
   .then(objectLoop)
-  .catch();
+  .catch();*/
 
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -390,8 +387,9 @@ document.getElementById("fecha-actual").innerHTML = formattedDate;
 
 
 
-//link active en navbar
+//link active en navbar (no funciona)
 
+/*
 document.addEventListener("DOMContentLoaded", function() {
 
   // Obtenemos todos los enlaces de la barra de navegación
@@ -416,15 +414,7 @@ document.addEventListener("DOMContentLoaded", function() {
 })
 ;
 
-
-
-
-
-//Detalle de Noticia
-
-//funcion para obtener un parametro por nombre
-
-
+//imprimir el componente de detalle de noticia 
 
 function newsDetail(){
   let content = item.texto;
@@ -445,4 +435,4 @@ function newsDetail(){
   </section>`
   ];
 
-  }
+  }*/
