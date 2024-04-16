@@ -253,6 +253,15 @@ function loadHTML() {
       console.error("Error al cargar el texto de intro:", error);
     });
 
+    fetch("../assets/html/login_form.html")
+    .then(function (response) {
+      print(response, "login-form");
+    })
+    
+    .catch(function (error) {
+      console.error("Error al cargar el login:", error);
+    });
+
   fetch("../assets/html/copyright.html")
     .then(function (response) {
       print(response, "copyright");
