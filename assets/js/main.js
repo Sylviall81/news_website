@@ -257,7 +257,7 @@ function loadHTML() {
     .then(function (response) {
       print(response, "login-form");
     })
-    
+
     .catch(function (error) {
       console.error("Error al cargar el login:", error);
     });
@@ -307,15 +307,15 @@ function printData(item) {
     `<article>
 		<header>
 			<span class="date">${item.fecha}</span>
-				<h3><a href="#">${item.titulo}</a></h3>
+				<h3><a href="../../generic.html?postId=${item.id}" >${item.titulo}</a></h3>
         
         <span><strong>Escrito por:</strong> ${item.autor} | <strong>Categoría: </strong>${item.categoria} </span>
 			</header>
-			<a href="#" class="image fit" ><img src="${urlImages}" alt="" /></a>
+			<a href="../../generic.html?postId=${item.id}" class="image fit" ><img src="${urlImages}" alt="" /></a>
       
-			<p>${content.length >= 50 ? content.substring(0, 50) + "..." : content}</p>
+			<p>${content.length >= 80 ? content.substring(0, 85) + "..." : content}</p>
 				<ul class="actions special">
-				<li><a href="#" class="button">Full Story</a></li>
+				<li><a href="../../generic.html?postId=${item.id} " class="button">Full Story</a></li>
 				</ul>
 	</article>`
   ];
@@ -343,3 +343,28 @@ formattedDate = formattedDate.replace(/^(.)/, char => char.toUpperCase());
 document.getElementById("fecha-actual").innerHTML = formattedDate;
 
 
+//Detalle de Noticia
+
+//funcion para obtener un parametro por nombre
+
+function getParameterByName(name, url) {
+  if (!url)
+      url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results)
+      return null;
+  if (!results[2])
+      return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+
+if (getParameterByName('postId')){
+
+  let text = getParameterByName('postId');
+
+  alert("estamos en generic para mostrar el post id:"+text)
+
+}
