@@ -226,7 +226,7 @@ async function print(datos, id) {
   document.getElementById(id).innerHTML = html;
 }
 
-//fetch de componentes
+//fetch de componentes descargados de carpeta html
 
 function loadHTML() {
   fetch("../assets/html/header.html")
@@ -253,6 +253,7 @@ function loadHTML() {
       console.error("Error al cargar el texto de intro:", error);
     });
 
+  
     fetch("../assets/html/login_form.html")
     .then(function (response) {
       print(response, "login-form");
@@ -285,6 +286,7 @@ loadHTML();
 
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
+
 var urlImages = "../../images/pic02.jpg";
 
 fetch(urlBase + endpoint)
@@ -298,6 +300,7 @@ async function objectLoop(response) {
   document.getElementById("print-container").innerHTML = datos
     .map(printData)
     .join(""); //map te mete comas entre items y join te permite removerla
+
 }
 
 function printData(item) {
@@ -322,6 +325,49 @@ function printData(item) {
 }
 
 
+
+function getParameterByName(name, url) {
+  if (!url)
+      url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results)
+      return null;
+  if (!results[2])
+      return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+
+if (getParameterByName('postId')){
+
+
+  let text = getParameterByName('postId');
+  let getItem = "api/post.php?id="+text;
+
+  //alert("estamos en generic para mostrar el post id:"+text)
+
+  fetch(urlBase + getItem)
+  .then(objectLoop)
+  .catch();
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Accesorios
+
 //Fecha Actual en Portada
 
 let currentDate = new Date();
@@ -343,28 +389,60 @@ formattedDate = formattedDate.replace(/^(.)/, char => char.toUpperCase());
 document.getElementById("fecha-actual").innerHTML = formattedDate;
 
 
+
+//link active en navbar
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  // Obtenemos todos los enlaces de la barra de navegación
+  //const nav = document.getElementById('#nav');
+  const navLinks = document.querySelectorAll('a');
+  console.log(navLinks);
+
+  // Iteramos sobre cada enlace
+  navLinks.forEach(function(link) {
+      // Agregamos un listener de eventos 'click' a cada enlace
+      link.addEventListener("click", function(event) {
+          // Removemos la clase 'active' de todos los enlaces
+          navLinks.forEach(function(link) {
+              link.classList.remove("active");
+          });
+
+          // Agregamos la clase 'active' solo al enlace que fue clickeado
+          this.classList.add("active");
+      });
+  });
+
+})
+;
+
+
+
+
+
 //Detalle de Noticia
 
 //funcion para obtener un parametro por nombre
 
-function getParameterByName(name, url) {
-  if (!url)
-      url = window.location.href;
-  name = name.replace(/[\[\]]/g, "\\$&");
-  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-      results = regex.exec(url);
-  if (!results)
-      return null;
-  if (!results[2])
-      return '';
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
 
 
-if (getParameterByName('postId')){
+function newsDetail(){
+  let content = item.texto;
 
-  let text = getParameterByName('postId');
+  return [
+    `<section class="post">
+    <header class="major">
+      <span id="fecha-actual" class="date"></span>
+      <h1>This is a<br />
+      Generic Page</h1>
+      <p>Aenean ornare velit lacus varius enim ullamcorper proin aliquam<br />
+      facilisis ante sed etiam magna interdum congue. Lorem ipsum dolor<br />
+      amet nullam sed etiam veroeros.</p>
+    </header>
+    <div class="image main"><img src="images/pic01.jpg" alt="" /></div>
+    <p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur sapien risus, commodo eget turpis at, elementum convallis enim turpis, lorem ipsum dolor sit amet nullam.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus. Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum.</p>
+  </section>`
+  ];
 
-  alert("estamos en generic para mostrar el post id:"+text)
-
-}
+  }
