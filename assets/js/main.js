@@ -282,9 +282,6 @@ function loadHTML() {
 
 loadHTML();
 
-
-
-
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
 
@@ -297,11 +294,13 @@ fetch(urlBase + endpoint)
 async function objectLoop(response) {
   let datos = await response.json();
   console.log(datos);
+  console.log(datos.length)
 
   document.getElementById("print-container").innerHTML = datos
     .map(printData)
     .join(""); //map te mete comas entre items y join te permite removerla
-}
+
+  }
 
 function printData(item) {
   let content = item.texto;
@@ -309,20 +308,20 @@ function printData(item) {
   return [
     `<article>
 		<header>
-			<span class="date">${item.fecha}</span>
-				<h3><a href="../../generic.html?postId=${item.id}" >${item.titulo}</a></h3>
+			<span class="date">${formatApiDate(item.fecha)}</span>
+				<h3><a href="../../generic.html?id=${item.id}" >${item.titulo}</a></h3>
         
-        <span><strong>Escrito por:</strong> ${
-          item.autor
-        } | <strong>Categoría: </strong>${item.categoria} </span>
+        <span>Categoría:${item.categoria} | Autor/a:${
+      item.nombre
+    } </span>
 			</header>
-			<a href="../../generic.html?postId=${
+			<a href="../../generic.html?id=${
         item.id
       }" class="image fit" ><img src="${urlImages}" alt="" /></a>
       
 			<p>${content.length >= 80 ? content.substring(0, 85) + "..." : content}</p>
 				<ul class="actions special">
-				<li><a href="../../generic.html?postId=${
+				<li><a href="../../generic.html?id=${
           item.id
         } " class="button">Full Story</a></li>
 				</ul>
@@ -348,8 +347,8 @@ async function handleData(response) {
     datos.map(printSingleNews); //map te mete comas entre items y join te permite removerla
 }
 
-if (getParameterByName("postId")) {
-  let text = getParameterByName("postId");
+if (getParameterByName("id")) {
+  let text = getParameterByName("id");
   let getItem = "api/post.php?id=" + text;
 
   //alert("estamos en generic para mostrar el post id:"+text)
@@ -361,10 +360,9 @@ if (getParameterByName("postId")) {
     });
 }
 
-function printSingleNews(item) {
-  
-  //manejo de formato de fecha de publicacion
-  let fechaAPI = item.fecha;
+//formateo para imprimir bien la fecha
+function formatApiDate(string){
+  let fechaAPI = string;
   let date = new Date(fechaAPI);
 
   const year = date.getFullYear();
@@ -374,13 +372,19 @@ function printSingleNews(item) {
   // Formatear la fecha en un formato legible
   const formattedDate = `${day}/${month}/${year}`;
 
+  return formattedDate
+
+}
+
+function printSingleNews(item) {
+  //manejo de formato de fecha de publicacion
   return [
     `<section class="post">
     <header class="major">
     <span id="fecha-actual" class="date">${formattedCurrentDate}</span>
       
       <h1>${item.titulo}</h1>
-      <p>${item.categoria} | ${item.autor} | ${formattedDate}</p>
+      <p>Categoría:${item.categoria} | Autor/a:${item.nombre} | Publicación: ${formatApiDate(item.fecha)}</p>
     </header>
     <div class="image main"><img src="${urlImages}" alt="" /></div>
     <p>${item.texto}</p>
@@ -389,12 +393,12 @@ function printSingleNews(item) {
 }
 
 
-
 /* Intentos featured post
+
 function loadFeaturedPost(){
 
 
-  text = Math.floor(Math.random()
+ 
 
   let getItem = "api/post.php?id=" + text;
 
@@ -432,17 +436,7 @@ function printFeaturedPost(item){
   ]
 }
 
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 //Accesorios
 
@@ -459,10 +453,14 @@ const options = {
 let formattedCurrentDate = currentDate.toLocaleDateString("es-ES", options);
 
 // Capitalizar la primera letra de cada palabra en el nombre del mes
-formattedCurrentDate = formattedCurrentDate.replace(/\b(\w)/g, (char) => char.toUpperCase());
+formattedCurrentDate = formattedCurrentDate.replace(/\b(\w)/g, (char) =>
+  char.toUpperCase()
+);
 
 // Capitalizar la primera letra del nombre del día
-formattedCurrentDate = formattedCurrentDate.replace(/^(.)/, (char) => char.toUpperCase());
+formattedCurrentDate = formattedCurrentDate.replace(/^(.)/, (char) =>
+  char.toUpperCase()
+);
 
 document.getElementById("fecha-actual").innerHTML = formattedCurrentDate;
 
