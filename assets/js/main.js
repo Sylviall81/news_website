@@ -286,20 +286,27 @@ loadHTML();
 
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
-var urlImages = "../../images/pic02.jpg";
+var urlImages = "../../images/pic05.jpg";
 
 //Fetch Get All
-
 fetch(urlBase + endpoint)
   .then(objectLoop)
+  .then()
   .catch();
 
 async function objectLoop(response) {
   let datos = await response.json();
   console.log(datos);
-  console.log(datos.length)
+  
+  let featuredPost = datos[0];
+  let regularPosts = datos.splice(1,datos.length)
 
-  document.getElementById("print-container").innerHTML = datos
+  console.log(featuredPost)
+  console.log (regularPosts)
+
+
+  document.getElementById("featured-post").innerHTML = printFeaturedPost(featuredPost)
+  document.getElementById("print-container").innerHTML = regularPosts
     .map(printData)
     .join(""); //map te mete comas entre items y join te permite removerlas
 
@@ -367,21 +374,7 @@ if (getParameterByName("id")) {
     });
 }
 
-//formateo para imprimir bien la fecha
-function formatApiDate(string){
-  let fechaAPI = string;
-  let date = new Date(fechaAPI);
 
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // Los meses en JavaScript van de 0 a 11, por lo que debemos sumar 1
-  const day = date.getDate();
-
-  // Formatear la fecha en un formato legible
-  const formattedDate = `${day}/${month}/${year}`;
-
-  return formattedDate
-
-}
 
 function printSingleNews(item) {
   //manejo de formato de fecha de publicacion
@@ -400,27 +393,6 @@ function printSingleNews(item) {
 }
 
 
-/* Intentos featured post
-
-function loadFeaturedPost(){
-
-
- 
-
-  let getItem = "api/post.php?id=" + text;
-
-  //alert("estamos en generic para mostrar el post id:"+text)
-
-  fetch(urlBase + getItem)
-    .then(handleData)
-    .catch(function (error) {
-      console.error("Error al cargar la noticia:", error);
-    });
-
-
-
-}
-
 
 //print featured post
 function printFeaturedPost(item){
@@ -430,20 +402,23 @@ function printFeaturedPost(item){
   return[
 
     `<header class="major">
-    <span class="date" id ="fecha-actual"></span>
-    <h2><a href="./generic.html=?postId=${item.id}">${item.titulo}</h2>
-    <p>${content.length >= 80 ? content.substring(0, 85) + "..." : content}</p>
-  </header>
-  <a href="./generic.html=?postId=${item.id}" class="image main"><img src="images/pic03.jpg" alt="" /></a>
+        <span class="date" id ="fecha-actual">${formattedCurrentDate}</span>
+         <h2><a href="./generic.html?id=${item.id}">${item.titulo}</h2>
+            <p>Categoría:${item.categoria} | Autor/a:${item.nombre} | Publicación: ${formatApiDate(item.fecha)}</p>
+    <center>
+      <p>${content.length >= 85 ? content.substring(0, 55) + "<br />"+content.substring(56, 85)+"...": content}</p>
+    </center>
+      </header>
+  <a href="./generic.html?id=${item.id}" class="image main"><img src="images/pic02.jpg" alt="" /></a>
   <ul class="actions special">
-    <li><a href="./generic.html=?postId=${item.id}"class="button large">Full Story</a></li>
+    <li><a href="./generic.html?id=${item.id}"class="button large">Full Story</a></li>
   </ul>`
 
   
   ]
 }
 
-*/
+
 
 //Accesorios
 
@@ -469,7 +444,24 @@ formattedCurrentDate = formattedCurrentDate.replace(/^(.)/, (char) =>
   char.toUpperCase()
 );
 
-document.getElementById("fecha-actual").innerHTML = formattedCurrentDate;
+document.getElementById("fecha-actual").innerHTML = (formattedCurrentDate).substring(0,",")+'</br>'+ (formattedCurrentDate).substring(" ", formattedCurrentDate.length);
+
+
+//formateo para imprimir bien la fecha
+function formatApiDate(string){
+  let fechaAPI = string;
+  let date = new Date(fechaAPI);
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Los meses en JavaScript van de 0 a 11, por lo que debemos sumar 1
+  const day = date.getDate();
+
+  // Formatear la fecha en un formato legible
+  const formattedDate = `${day}/${month}/${year}`;
+
+  return formattedDate
+
+}
 
 //link active en navbar
 /*document.addEventListener("DOMContentLoaded", function () {
