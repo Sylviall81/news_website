@@ -220,8 +220,6 @@
   }
 })(jQuery);
 
-
-
 //Esto es del fectch para imprimir el HTML los componentes de la web.
 async function print(datos, id) {
   let html = await datos.text();
@@ -240,7 +238,7 @@ function loadHTML() {
       console.error("Error al cargar el header:", error);
     });
 
-    fetch("../assets/html/nav.html")
+  fetch("../assets/html/nav.html")
     .then(function (response) {
       print(response, "nav");
     })
@@ -256,8 +254,7 @@ function loadHTML() {
       console.error("Error al cargar el texto de intro:", error);
     });
 
-  
-    fetch("../assets/html/login_form.html")
+  fetch("../assets/html/login_form.html")
     .then(function (response) {
       print(response, "login-form");
     })
@@ -285,8 +282,6 @@ function loadHTML() {
 
 loadHTML();
 
-
-
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
 
@@ -303,7 +298,6 @@ async function objectLoop(response) {
   document.getElementById("print-container").innerHTML = datos
     .map(printData)
     .join(""); //map te mete comas entre items y join te permite removerla
-
 }
 
 function printData(item) {
@@ -315,29 +309,31 @@ function printData(item) {
 			<span class="date">${item.fecha}</span>
 				<h3><a href="../../generic.html?postId=${item.id}" >${item.titulo}</a></h3>
         
-        <span><strong>Escrito por:</strong> ${item.autor} | <strong>Categoría: </strong>${item.categoria} </span>
+        <span><strong>Escrito por:</strong> ${
+          item.autor
+        } | <strong>Categoría: </strong>${item.categoria} </span>
 			</header>
-			<a href="../../generic.html?postId=${item.id}" class="image fit" ><img src="${urlImages}" alt="" /></a>
+			<a href="../../generic.html?postId=${
+        item.id
+      }" class="image fit" ><img src="${urlImages}" alt="" /></a>
       
 			<p>${content.length >= 80 ? content.substring(0, 85) + "..." : content}</p>
 				<ul class="actions special">
-				<li><a href="../../generic.html?postId=${item.id} " class="button">Full Story</a></li>
+				<li><a href="../../generic.html?postId=${
+          item.id
+        } " class="button">Full Story</a></li>
 				</ul>
-	</article>`
+	</article>`,
   ];
 }
 
-
 function getParameterByName(name, url) {
-  if (!url)
-      url = window.location.href;
+  if (!url) url = window.location.href;
   name = name.replace(/[\[\]]/g, "\\$&");
   var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-      results = regex.exec(url);
-  if (!results)
-      return null;
-  if (!results[2])
-      return '';
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
@@ -345,48 +341,49 @@ async function handleData(response) {
   let datos = await response.json();
   console.log(datos);
 
-  document.getElementById("print-single-news").innerHTML = datos
-    .map(printSingleNews)//map te mete comas entre items y join te permite removerla
-
+  document.getElementById("print-single-news").innerHTML =
+    datos.map(printSingleNews); //map te mete comas entre items y join te permite removerla
 }
 
-
-if (getParameterByName('postId')){
-
-
-  let text = getParameterByName('postId');
-  let getItem = "api/post.php?id="+text;
+if (getParameterByName("postId")) {
+  let text = getParameterByName("postId");
+  let getItem = "api/post.php?id=" + text;
 
   //alert("estamos en generic para mostrar el post id:"+text)
 
-  fetch(urlBase+getItem)
+  fetch(urlBase + getItem)
     .then(handleData)
     .catch(function (error) {
       console.error("Error al cargar la noticia:", error);
     });
-
 }
 
-function printSingleNews(item){
+function printSingleNews(item) {
+  
+  //manejo de formato de fecha de publicacion
+  let fechaAPI = item.fecha;
+  let date = new Date(fechaAPI);
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Los meses en JavaScript van de 0 a 11, por lo que debemos sumar 1
+  const day = date.getDate();
+
+  // Formatear la fecha en un formato legible
+  const formattedDate = `${day}/${month}/${year}`;
 
   return [
     `<section class="post">
     <header class="major">
-      <span id="fecha-actual" class="date">${item.fecha}</span>
+    <span id="fecha-actual" class="date">${formattedCurrentDate}</span>
+      
       <h1>${item.titulo}</h1>
-      <p>${item.categoria} | ${item.autor}</p>
+      <p>${item.categoria} | ${item.autor} | ${formattedDate}</p>
     </header>
     <div class="image main"><img src="${urlImages}" alt="" /></div>
     <p>${item.texto}</p>
-  </section>`
+  </section>`,
   ];
-
-
-
 }
-
-
-
 
 //Accesorios
 
@@ -400,51 +397,39 @@ const options = {
   day: "numeric",
 };
 
-let formattedDate = currentDate.toLocaleDateString('es-ES', options);
+let formattedCurrentDate = currentDate.toLocaleDateString("es-ES", options);
 
 // Capitalizar la primera letra de cada palabra en el nombre del mes
-formattedDate = formattedDate.replace(/\b(\w)/g, char => char.toUpperCase());
+formattedCurrentDate = formattedCurrentDate.replace(/\b(\w)/g, (char) => char.toUpperCase());
 
 // Capitalizar la primera letra del nombre del día
-formattedDate = formattedDate.replace(/^(.)/, char => char.toUpperCase());
+formattedCurrentDate = formattedCurrentDate.replace(/^(.)/, (char) => char.toUpperCase());
 
-document.getElementById("fecha-actual").innerHTML = formattedDate;
-
-
+document.getElementById("fecha-actual").innerHTML = formattedCurrentDate;
 
 //link active en navbar
 
-document.addEventListener("DOMContentLoaded", function() {
-
+document.addEventListener("DOMContentLoaded", function () {
   // Obtenemos todos los enlaces de la barra de navegación
   //const nav = document.getElementById('#nav');
-  const navLinks = document.querySelectorAll('a');
+  const navLinks = document.querySelectorAll("a");
   console.log(navLinks);
 
   // Iteramos sobre cada enlace
-  navLinks.forEach(function(link) {
-      // Agregamos un listener de eventos 'click' a cada enlace
-      link.addEventListener("click", function(event) {
-          // Removemos la clase 'active' de todos los enlaces
-          navLinks.forEach(function(link) {
-              link.classList.remove("active");
-          });
-
-          // Agregamos la clase 'active' solo al enlace que fue clickeado
-          this.classList.add("active");
+  navLinks.forEach(function (link) {
+    // Agregamos un listener de eventos 'click' a cada enlace
+    link.addEventListener("click", function (event) {
+      // Removemos la clase 'active' de todos los enlaces
+      navLinks.forEach(function (link) {
+        link.classList.remove("active");
       });
+
+      // Agregamos la clase 'active' solo al enlace que fue clickeado
+      this.classList.add("active");
+    });
   });
-
-})
-;
-
-
-
-
+});
 
 //Detalle de Noticia
 
 //funcion para obtener un parametro por nombre
-
-
-
