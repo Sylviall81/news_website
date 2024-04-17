@@ -223,6 +223,7 @@
 
 //LOGICA TRABAJADA EN CLASE
 
+//Esto es del fectch para imprimir el HTML los componentes de la web.
 async function print(datos, id) {
   let html = await datos.text();
   //  $('#' + donde).html(html);
@@ -239,7 +240,7 @@ function loadHTML() {
       console.error("Error al cargar el header:", error);
     });
 
-    fetch("../assets/html/nav.html")
+  fetch("../assets/html/nav.html")
     .then(function (response) {
       print(response, "nav");
     })
@@ -255,8 +256,7 @@ function loadHTML() {
       console.error("Error al cargar el texto de intro:", error);
     });
 
-  
-    fetch("../assets/html/login_form.html")
+  fetch("../assets/html/login_form.html")
     .then(function (response) {
       print(response, "login-form");
     })
@@ -284,8 +284,6 @@ function loadHTML() {
 
 loadHTML();
 
-
-
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
 var urlImages = "../../images/pic02.jpg";
@@ -299,12 +297,13 @@ fetch(urlBase + endpoint)
 async function objectLoop(response) {
   let datos = await response.json();
   console.log(datos);
+  console.log(datos.length)
 
   document.getElementById("print-container").innerHTML = datos
     .map(printData)
     .join(""); //map te mete comas entre items y join te permite removerlas
 
-}
+  }
 
 //aqui se imprimen la tarjetas del home
 function printData(item) {
@@ -313,18 +312,24 @@ function printData(item) {
   return [
     `<article>
 		<header>
-			<span class="date">${item.fecha}</span>
-				<h3><a href="../../generic.html?postId=${item.id}" >${item.titulo}</a></h3>
+			<span class="date">${formatApiDate(item.fecha)}</span>
+				<h3><a href="../../generic.html?id=${item.id}" >${item.titulo}</a></h3>
         
-        <span><strong>Escrito por:</strong> ${item.autor} | <strong>Categoría: </strong>${item.categoria} </span>
+        <span>Categoría:${item.categoria} | Autor/a:${
+      item.nombre
+    } </span>
 			</header>
-			<a href="../../generic.html?postId=${item.id}" class="image fit" ><img src="${urlImages}" alt="" /></a>
+			<a href="../../generic.html?id=${
+        item.id
+      }" class="image fit" ><img src="${urlImages}" alt="" /></a>
       
 			<p>${content.length >= 80 ? content.substring(0, 85) + "..." : content}</p>
 				<ul class="actions special">
-				<li><a href="../../generic.html?postId=${item.id} " class="button">Full Story</a></li>
+				<li><a href="../../generic.html?id=${
+          item.id
+        } " class="button">Full Story</a></li>
 				</ul>
-	</article>`
+	</article>`,
   ];
 }
 
@@ -332,36 +337,113 @@ function printData(item) {
 //Funciones para ver el detalle de noticia
 
 function getParameterByName(name, url) {
-  if (!url)
-      url = window.location.href;
+  if (!url) url = window.location.href;
   name = name.replace(/[\[\]]/g, "\\$&");
   var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-      results = regex.exec(url);
-  if (!results)
-      return null;
-  if (!results[2])
-      return '';
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+async function handleData(response) {
+  let datos = await response.json();
+  console.log(datos);
 
-if (getParameterByName('postId')){
+  document.getElementById("print-single-news").innerHTML =
+    datos.map(printSingleNews); //map te mete comas entre items y join te permite removerla
+}
 
+if (getParameterByName("id")) {
+  let text = getParameterByName("id");
+  let getItem = "api/post.php?id=" + text;
 
-  let text = getParameterByName('postId');
-  let getItem = "api/post.php?id="+text;
+  //alert("estamos en generic para mostrar el post id:"+text)
 
-  alert("estamos en generic para mostrar el post id:"+text)
-
-  /*fetch para "traer" la noticia x el id
   fetch(urlBase + getItem)
-  .then(objectLoop)
-  .catch();*/
+    .then(handleData)
+    .catch(function (error) {
+      console.error("Error al cargar la noticia:", error);
+    });
+}
+
+//formateo para imprimir bien la fecha
+function formatApiDate(string){
+  let fechaAPI = string;
+  let date = new Date(fechaAPI);
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Los meses en JavaScript van de 0 a 11, por lo que debemos sumar 1
+  const day = date.getDate();
+
+  // Formatear la fecha en un formato legible
+  const formattedDate = `${day}/${month}/${year}`;
+
+  return formattedDate
+
+}
+
+function printSingleNews(item) {
+  //manejo de formato de fecha de publicacion
+  return [
+    `<section class="post">
+    <header class="major">
+    <span id="fecha-actual" class="date">${formattedCurrentDate}</span>
+      
+      <h1>${item.titulo}</h1>
+      <p>Categoría:${item.categoria} | Autor/a:${item.nombre} | Publicación: ${formatApiDate(item.fecha)}</p>
+    </header>
+    <div class="image main"><img src="${urlImages}" alt="" /></div>
+    <p>${item.texto}</p>
+  </section>`,
+  ];
+}
+
+
+/* Intentos featured post
+
+function loadFeaturedPost(){
+
+
+ 
+
+  let getItem = "api/post.php?id=" + text;
+
+  //alert("estamos en generic para mostrar el post id:"+text)
+
+  fetch(urlBase + getItem)
+    .then(handleData)
+    .catch(function (error) {
+      console.error("Error al cargar la noticia:", error);
+    });
+
+
 
 }
 
 
+//print featured post
+function printFeaturedPost(item){
 
+  let content = item.texto;
+ 
+  return[
+
+    `<header class="major">
+    <span class="date" id ="fecha-actual"></span>
+    <h2><a href="./generic.html=?postId=${item.id}">${item.titulo}</h2>
+    <p>${content.length >= 80 ? content.substring(0, 85) + "..." : content}</p>
+  </header>
+  <a href="./generic.html=?postId=${item.id}" class="image main"><img src="images/pic03.jpg" alt="" /></a>
+  <ul class="actions special">
+    <li><a href="./generic.html=?postId=${item.id}"class="button large">Full Story</a></li>
+  </ul>`
+
+  
+  ]
+}
+
+*/
 
 //Accesorios
 
@@ -375,64 +457,38 @@ const options = {
   day: "numeric",
 };
 
-let formattedDate = currentDate.toLocaleDateString('es-ES', options);
+let formattedCurrentDate = currentDate.toLocaleDateString("es-ES", options);
 
 // Capitalizar la primera letra de cada palabra en el nombre del mes
-formattedDate = formattedDate.replace(/\b(\w)/g, char => char.toUpperCase());
+formattedCurrentDate = formattedCurrentDate.replace(/\b(\w)/g, (char) =>
+  char.toUpperCase()
+);
 
 // Capitalizar la primera letra del nombre del día
-formattedDate = formattedDate.replace(/^(.)/, char => char.toUpperCase());
+formattedCurrentDate = formattedCurrentDate.replace(/^(.)/, (char) =>
+  char.toUpperCase()
+);
 
-document.getElementById("fecha-actual").innerHTML = formattedDate;
+document.getElementById("fecha-actual").innerHTML = formattedCurrentDate;
 
-
-
-//link active en navbar (no funciona)
-
-/*
-document.addEventListener("DOMContentLoaded", function() {
-
+//link active en navbar
+/*document.addEventListener("DOMContentLoaded", function () {
   // Obtenemos todos los enlaces de la barra de navegación
   //const nav = document.getElementById('#nav');
-  const navLinks = document.querySelectorAll('a');
+  const navLinks = document.querySelectorAll("a");
   console.log(navLinks);
 
   // Iteramos sobre cada enlace
-  navLinks.forEach(function(link) {
-      // Agregamos un listener de eventos 'click' a cada enlace
-      link.addEventListener("click", function(event) {
-          // Removemos la clase 'active' de todos los enlaces
-          navLinks.forEach(function(link) {
-              link.classList.remove("active");
-          });
-
-          // Agregamos la clase 'active' solo al enlace que fue clickeado
-          this.classList.add("active");
+  navLinks.forEach(function (link) {
+    // Agregamos un listener de eventos 'click' a cada enlace
+    link.addEventListener("click", function (event) {
+      // Removemos la clase 'active' de todos los enlaces
+      navLinks.forEach(function (link) {
+        link.classList.remove("active");
       });
+
+      // Agregamos la clase 'active' solo al enlace que fue clickeado
+      this.classList.add("active");
+    });
   });
-
-})
-;
-
-//imprimir el componente de detalle de noticia 
-
-function newsDetail(){
-  let content = item.texto;
-
-  return [
-    `<section class="post">
-    <header class="major">
-      <span id="fecha-actual" class="date"></span>
-      <h1>This is a<br />
-      Generic Page</h1>
-      <p>Aenean ornare velit lacus varius enim ullamcorper proin aliquam<br />
-      facilisis ante sed etiam magna interdum congue. Lorem ipsum dolor<br />
-      amet nullam sed etiam veroeros.</p>
-    </header>
-    <div class="image main"><img src="images/pic01.jpg" alt="" /></div>
-    <p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur sapien risus, commodo eget turpis at, elementum convallis enim turpis, lorem ipsum dolor sit amet nullam.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus. Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum.</p>
-  </section>`
-  ];
-
-  }*/
+}); */
