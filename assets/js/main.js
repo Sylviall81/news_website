@@ -282,6 +282,9 @@ function loadHTML() {
 
 loadHTML();
 
+
+
+
 var urlBase = "https://sylvia.104cubes.com/MySQL/";
 var endpoint = "api/select.php";
 
@@ -385,6 +388,62 @@ function printSingleNews(item) {
   ];
 }
 
+
+
+/* Intentos featured post
+function loadFeaturedPost(){
+
+
+  text = Math.floor(Math.random()
+
+  let getItem = "api/post.php?id=" + text;
+
+  //alert("estamos en generic para mostrar el post id:"+text)
+
+  fetch(urlBase + getItem)
+    .then(handleData)
+    .catch(function (error) {
+      console.error("Error al cargar la noticia:", error);
+    });
+
+
+
+}
+
+
+//print featured post
+function printFeaturedPost(item){
+
+  let content = item.texto;
+ 
+  return[
+
+    `<header class="major">
+    <span class="date" id ="fecha-actual"></span>
+    <h2><a href="./generic.html=?postId=${item.id}">${item.titulo}</h2>
+    <p>${content.length >= 80 ? content.substring(0, 85) + "..." : content}</p>
+  </header>
+  <a href="./generic.html=?postId=${item.id}" class="image main"><img src="images/pic03.jpg" alt="" /></a>
+  <ul class="actions special">
+    <li><a href="./generic.html=?postId=${item.id}"class="button large">Full Story</a></li>
+  </ul>`
+
+  
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Accesorios
 
 //Fecha Actual en Portada
@@ -408,8 +467,7 @@ formattedCurrentDate = formattedCurrentDate.replace(/^(.)/, (char) => char.toUpp
 document.getElementById("fecha-actual").innerHTML = formattedCurrentDate;
 
 //link active en navbar
-
-document.addEventListener("DOMContentLoaded", function () {
+/*document.addEventListener("DOMContentLoaded", function () {
   // Obtenemos todos los enlaces de la barra de navegación
   //const nav = document.getElementById('#nav');
   const navLinks = document.querySelectorAll("a");
@@ -428,8 +486,4 @@ document.addEventListener("DOMContentLoaded", function () {
       this.classList.add("active");
     });
   });
-});
-
-//Detalle de Noticia
-
-//funcion para obtener un parametro por nombre
+}); */
